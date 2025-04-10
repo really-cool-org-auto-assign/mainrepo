@@ -1,0 +1,25 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Assign Pull Request
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    types: [open, reopened, ready_for_review]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  assign_reviewers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Set team as reviewer"
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              team_reviewers: ["your-team-slug"] # Replace with your team slug
+            });
